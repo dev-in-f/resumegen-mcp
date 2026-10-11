@@ -1,10 +1,18 @@
 [project]
 name = "resumegen-mcp"
-version = "0.1.0"
-description = "Add your description here"
+dynamic = ["version"]
+description = "The MCP server companion to the resumegen-cli"
 readme = "README.md"
-requires-python = ">=3.14"
+authors = [{ name = "dev-in-f" }]
+requires-python = ">=3.13"
 dependencies = [
     "mcp>=2.3.0",
     "pypdfium2>=5.14.0",
+    "resumegen-cli>=0.2.1",
 ]
+
+[tool.uv-dynamic-versioning]
+fallback-version = "1.0.0"
+
+[dependency-groups]
+dev = ["uv-dynamic-versioning>=0.14.1"]

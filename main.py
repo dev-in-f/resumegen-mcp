@@ -9,9 +9,7 @@ import yaml
 from mcp.server.mcpserver import Image, MCPServer
 from mcp.server.mcpserver.exceptions import ResourceError, ToolError
 from mcp.types import CallToolResult, TextContent, ToolAnnotations
-from resumegen._cli.shared import _load_yaml_to_data_model
-from resumegen._core.config import Config, ResumeData
-from resumegen._core.pdf import render_pdf
+from resumegen import Config, ResumeData, render_pdf
 
 WORKSPACE = Path(os.getenv("RESUMEGEN_DATA_DIR", "/data"))
 MASTER_DATA_PATH = Path(
@@ -64,7 +62,7 @@ def load_config() -> Config:
     if config_path:
         with contained(Path(config_path)).open() as f:
             data = yaml.safe_load(f)
-            return _load_yaml_to_data_model(data, Config)
+            return Config.model_validate(data)
     return Config()
 
 

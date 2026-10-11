@@ -13,13 +13,19 @@ RUN chown -R mcp:mcp /data
 USER mcp
 WORKDIR /app
 
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never
+
+USER root
+
 COPY pyproject.toml uv.lock README.md ./
-RUN uv sync --frozen --no-dev --no-install-project --group mcp
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --no-install-project
 
-COPY src/ src/
-COPY examples/ src/resumegen/examples/
-RUN uv sync --frozen --no-dev --group mcp
+COPY main.py ./
+RUN uv sync --frozen --no-dev && chown -R mcp:mcp /app
 
-ENV RESUMEGEN_DATA_DIR=/data
-EXPOSE 8000
-ENTRYPOINT ["/app/.venv/bin/python", "src/resumegen/mcp_server.py"]
+USER mcp
+
+ENTRYPOINT ["/app/.venv/bin/python", "main.py"]
